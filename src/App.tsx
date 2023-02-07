@@ -1,16 +1,13 @@
 import { Route, Routes } from 'react-router-dom';
-import Header from './components/Header';
 import LandingPage from './pages/LandingPage';
-import Product from './pages/ProductPage';
+import Login from './pages/Login';
 
 const App = () => {
 
   return (
     <>
-      <Header />
-
       <Routes>
-        <Route path="/product" element={<Product />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/" element={<LandingPage />} />
       </Routes>
     </>
