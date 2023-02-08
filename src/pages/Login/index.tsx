@@ -15,8 +15,10 @@ import { FormEvent, useState } from 'react';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { useAuth } from '../../common/hooks/auth';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const { signin, isAutenticated, token } = useAuth();
 
@@ -98,7 +100,7 @@ const Login = () => {
               component="button"
               variant="body2"
               onClick={() => {
-                console.info("I'm a button.");
+                navigate('/signup')
               }}
             >
               Registre-se
