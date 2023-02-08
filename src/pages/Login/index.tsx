@@ -11,45 +11,29 @@ import {
   Link,
 } from '@mui/material';
 import { Box } from '@mui/system';
-import { ChangeEvent, FormEvent, useState } from 'react';
+import { FormEvent, useState } from 'react';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import { useGetUserQuery } from '../../common/services/api';
-import { setUser } from '../../common/services/authSlice';
-import { useAppDispatch, useAppSelector } from '../../common/hooks/reduxHooks';
+import { useAuth } from '../../common/hooks/auth';
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [state, setState] = useState({
-    email: '',
-    password: '',
-  });
+  const { signin, isAutenticated, token } = useAuth();
+
+  console.log('Login', { isAutenticated, token });
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
-
-  const { value } = useAppSelector((state) => state.auth);
-  const dispatch = useAppDispatch();
-  const data = useGetUserQuery(value.email);
-  console.log({ data });
-
-  const onFieldChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const { value, id } = event.target;
-    setState({ ...state, [id]: value });
-  };
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const formData = new FormData(event.currentTarget);
-    console.log('eeeee', formData);
-    const obj = {
+    const input = {
       email: formData.get('email') ?? '',
       password: formData.get('password') ?? '',
     };
 
-    console.log('aBBJ', obj);
-
-    dispatch(setUser(state));
+    signin(input);
   };
 
   return (
@@ -80,7 +64,7 @@ const Login = () => {
               name="email"
               type="text"
               label="Email"
-              onChange={onFieldChange}
+              defaultValue="Ola92@gmail.com"
             />
           </FormControl>
 
@@ -90,6 +74,7 @@ const Login = () => {
               id="password"
               name="password"
               type={showPassword ? 'text' : 'password'}
+              defaultValue="nFRb2uF4jGqRC6y"
               endAdornment={
                 <InputAdornment position="end">
                   <IconButton
@@ -101,7 +86,6 @@ const Login = () => {
                   </IconButton>
                 </InputAdornment>
               }
-              onChange={onFieldChange}
               label="Senha"
             />
           </FormControl>
