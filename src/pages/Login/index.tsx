@@ -11,10 +11,12 @@ import {
   Link,
 } from '@mui/material';
 import { Box } from '@mui/system';
-import { ChangeEvent, FormEvent, MouseEvent, useState } from 'react';
+import { ChangeEvent, FormEvent, useState } from 'react';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import { ChangeHandler } from 'react-hook-form';
+import { useGetUserQuery } from '../../common/services/api';
+import { setUser } from '../../common/services/authSlice';
+import { useAppDispatch, useAppSelector } from '../../common/hooks/reduxHooks';
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -25,6 +27,11 @@ const Login = () => {
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
+  const { value } = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
+  const data = useGetUserQuery(value.email);
+  console.log({ data });
+
   const onFieldChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { value, id } = event.target;
     setState({ ...state, [id]: value });
@@ -32,7 +39,17 @@ const Login = () => {
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log({ state });
+
+    const formData = new FormData(event.currentTarget);
+    console.log('eeeee', formData);
+    const obj = {
+      email: formData.get('email') ?? '',
+      password: formData.get('password') ?? '',
+    };
+
+    console.log('aBBJ', obj);
+
+    dispatch(setUser(state));
   };
 
   return (
@@ -58,13 +75,20 @@ const Login = () => {
         >
           <FormControl required variant="outlined">
             <InputLabel htmlFor="email">E-mail</InputLabel>
-            <OutlinedInput id="email" type="text" label="Email" onChange={onFieldChange} />
+            <OutlinedInput
+              id="email"
+              name="email"
+              type="text"
+              label="Email"
+              onChange={onFieldChange}
+            />
           </FormControl>
 
           <FormControl required variant="outlined">
             <InputLabel htmlFor="password">Senha</InputLabel>
             <OutlinedInput
               id="password"
+              name="password"
               type={showPassword ? 'text' : 'password'}
               endAdornment={
                 <InputAdornment position="end">
