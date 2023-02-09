@@ -31,7 +31,7 @@ const Login = () => {
 
   useEffect(() => {
     if (userState.token) {
-      navigate('/', { replace: true });
+      navigate('/products', { replace: true });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userState.token]);
