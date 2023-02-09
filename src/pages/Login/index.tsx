@@ -1,4 +1,10 @@
+import { FormEvent, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import {
+  Box,
   Typography,
   FormControl,
   InputLabel,
@@ -9,20 +15,26 @@ import {
   Paper,
   Button,
   Link,
+  FormHelperText,
 } from '@mui/material';
-import { Box } from '@mui/system';
-import { FormEvent, useState } from 'react';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
+
 import { useAuth } from '../../common/hooks/auth';
-import { useNavigate } from 'react-router-dom';
+import { useAppSelector } from '../../common/hooks/reduxHooks';
 
 const Login = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-  const { signin, isAutenticated, token } = useAuth();
+  const { signin, error } = useAuth();
+  console.log({ error });
 
-  console.log('Login', { isAutenticated, token });
+  const { value: userState } = useAppSelector((state) => state.user);
+
+  useEffect(() => {
+    if (userState.token) {
+      navigate('/', { replace: true });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userState.token]);
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -30,12 +42,12 @@ const Login = () => {
     event.preventDefault();
 
     const formData = new FormData(event.currentTarget);
-    const input = {
+    const inputData = {
       email: formData.get('email') ?? '',
       password: formData.get('password') ?? '',
     };
 
-    signin(input);
+    signin(inputData);
   };
 
   return (
@@ -67,10 +79,11 @@ const Login = () => {
               type="text"
               label="Email"
               defaultValue="Ola92@gmail.com"
+              error={error}
             />
           </FormControl>
 
-          <FormControl required variant="outlined">
+          <FormControl required error={error} variant="outlined">
             <InputLabel htmlFor="password">Senha</InputLabel>
             <OutlinedInput
               id="password"
@@ -90,6 +103,7 @@ const Login = () => {
               }
               label="Senha"
             />
+            {error && <FormHelperText id="password-text">Email ou senha inválido</FormHelperText>}
           </FormControl>
           <Button type="submit" variant="contained">
             Entrar
@@ -100,7 +114,7 @@ const Login = () => {
               component="button"
               variant="body2"
               onClick={() => {
-                navigate('/signup')
+                navigate('/signup');
               }}
             >
               Registre-se

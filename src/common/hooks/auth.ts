@@ -5,41 +5,46 @@ import { InputUser } from '../types';
 import { useAppDispatch, useAppSelector } from './reduxHooks';
 
 export const useAuth = () => {
-  const [isAutenticated, setIsAutenticated] = useState(false);
+  const [skip, setSkip] = useState(true);
+  const [error, setError] = useState(false);
   const [userInput, setUserInput] = useState({ email: '', password: '' });
-  const [token, setToken] = useState('');
 
   const { value: userState } = useAppSelector((state) => state.user);
-  // console.log('LOGIN PAGE:::', userState);
+  console.log('Auth hook:::', userState);
 
   const dispatch = useAppDispatch();
 
-  const { data, isError, isLoading } = useGetUserQuery(userInput.email);
-  // console.log({ data, isError, isLoading });
+  const { data, isError, isLoading } = useGetUserQuery(userInput.email, { skip });
+  console.log({ data, isError, isLoading });
 
   useEffect(() => {
     if (data?.length === 1) {
       const [user] = data;
-      dispatch(setUser(user));
+      console.log('user: ', user.senha, 'input', userInput.password);
+      if (user.senha === userInput.password) {
+        setError(false);
+        dispatch(setUser(user));
+      } else {
+        setError(true);
+      }
+    }
+
+    if (data?.length === 0) {
+      setError(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data]);
+  }, [data, userInput]);
 
-  useEffect(() => {
-    setIsAutenticated(userState.senha === userInput.password);
-    setToken(userState.token);
-  }, [userState, userInput]);
-
-  const signin = (input: InputUser) => {
+  const signin = (inputData: InputUser) => {
     console.log('sign in');
-    setUserInput(input);
+    setSkip(false);
+    setUserInput(inputData);
   };
 
   const signout = () => {
     console.log('sign out');
-    setIsAutenticated(false);
-    setToken('');
+    localStorage.removeItem('user');
   };
 
-  return { signin, signout, token, isAutenticated, isLoading };
+  return { signin, signout, isLoading, error };
 };
