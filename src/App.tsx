@@ -1,7 +1,7 @@
 import { Route, Routes } from 'react-router-dom';
 import RequireAuth from './components/RequireAuth';
 import Login from './pages/Login';
-import Product from './pages/ProductPage';
+import Dashboard from './pages/Dashboard';
 import Signup from './pages/Signup';
 
 const App = () => {
@@ -14,7 +14,7 @@ const App = () => {
           path="/"
           element={
             <RequireAuth>
-              <Product />
+              <Dashboard />
             </RequireAuth>
           }
         />
