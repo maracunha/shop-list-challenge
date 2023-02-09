@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Routes, Route, Outlet, Link } from 'react-router-dom';
 
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -16,9 +17,13 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 
+import Products from '../../components/Products';
+import NewProduct from '../../components/NewProduct';
+import { SIDE_NAMES } from '../../common/constants';
+
 const drawerWidth = 240;
 
-export default function ResponsiveDrawer() {
+export default function Dashboard() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const handleDrawerToggle = () => {
@@ -29,20 +34,18 @@ export default function ResponsiveDrawer() {
     <div>
       <Toolbar />
       <List>
-        {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
+        {Object.keys(SIDE_NAMES).map((text, index) => (
           <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
+            <ListItemButton component={Link} to={text}>
+              <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
+              {/* eslint-disable-next-line @typescript-eslint/no-unsafe-assignment */}
+              <ListItemText primary={SIDE_NAMES[text]} />
             </ListItemButton>
           </ListItem>
         ))}
       </List>
     </div>
   );
-
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -105,13 +108,12 @@ export default function ResponsiveDrawer() {
         sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
       >
         <Toolbar />
-        <Typography paragraph>
-          bl bla
-        </Typography>
-        <Typography paragraph>
-          fee ffoo
-        </Typography>
+        <Routes>
+          <Route path="/products" element={<Products />} />
+          <Route path="/new" element={<NewProduct />} />
+        </Routes>
       </Box>
+      <Outlet />
     </Box>
   );
 }
