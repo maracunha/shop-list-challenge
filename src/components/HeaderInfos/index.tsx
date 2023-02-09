@@ -22,8 +22,6 @@ const HeaderInfos = () => {
     setAnchorEl(null);
   };
 
-
-console.log(userState)
   return (
     <>
     <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center', mr: 2 }}>
