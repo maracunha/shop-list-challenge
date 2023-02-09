@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useGetUserQuery } from '../services/api';
-import { setUser } from '../services/userSlice';
+import { setUser, resetUser } from '../services/userSlice';
 import { InputUser } from '../types';
 import { useAppDispatch, useAppSelector } from './reduxHooks';
 
@@ -41,10 +41,12 @@ export const useAuth = () => {
     setUserInput(inputData);
   };
 
-  const signout = () => {
+  const logout = () => {
     console.log('sign out');
-    localStorage.removeItem('user');
+    // localStorage.removeItem('user');
+    dispatch(resetUser());
   };
 
-  return { signin, signout, isLoading, error };
+
+  return { signin, logout, isLoading, error };
 };
