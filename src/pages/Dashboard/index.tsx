@@ -15,13 +15,14 @@ import ListItemText from '@mui/material/ListItemText';
 import MailIcon from '@mui/icons-material/Mail';
 import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
 
 import Products from '../../components/Products';
 import NewProduct from '../../components/NewProduct';
 import { SIDE_NAMES } from '../../common/constants';
+import HeaderInfos from '../../components/HeaderInfos';
 
 const drawerWidth = 240;
+
 
 export default function Dashboard() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -55,6 +56,9 @@ export default function Dashboard() {
         sx={{
           zIndex: (theme) => theme.zIndex.drawer + 1,
           ml: { sm: `${drawerWidth}px` },
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center',
         }}
       >
         <Toolbar>
@@ -67,10 +71,8 @@ export default function Dashboard() {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap component="div">
-            Responsive drawer
-          </Typography>
         </Toolbar>
+        <HeaderInfos />
       </AppBar>
       <Box
         component="nav"
