@@ -1,20 +1,18 @@
 import { useState, MouseEvent } from 'react';
 import { Avatar, Typography, Box } from '@mui/material';
 
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import Divider from '@mui/material/Divider';
-import IconButton from '@mui/material/IconButton';
-import Tooltip from '@mui/material/Tooltip';
-import PersonAdd from '@mui/icons-material/PersonAdd';
+import { Menu, MenuItem, ListItemIcon, IconButton, Tooltip } from '@mui/material';
 import Logout from '@mui/icons-material/Logout';
+
 import { useAuth } from '../../common/hooks/auth';
+import { useAppSelector } from '../../common/hooks/reduxHooks';
 
 const HeaderInfos = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+
   const { logout } = useAuth();
+  const { value: userState } = useAppSelector((state) => state.user);
 
   const handleClick = (event: MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -24,11 +22,13 @@ const HeaderInfos = () => {
     setAnchorEl(null);
   };
 
+
+console.log(userState)
   return (
     <>
     <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center', mr: 2 }}>
       <Typography variant="h6">
-      Full Name
+      { `${userState.nome} ${userState.sobrenome}` }
       </Typography>
         <Tooltip title="Configuracão da conta">
           <IconButton
@@ -36,7 +36,7 @@ const HeaderInfos = () => {
             size="small"
             sx={{ ml: 2 }}
           >
-            <Avatar sx={{ width: 32, height: 32 }}>M</Avatar>
+            <Avatar sx={{ width: 32, height: 32 }} src={userState.image} />
           </IconButton>
         </Tooltip>
         <Menu
