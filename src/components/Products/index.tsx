@@ -23,7 +23,7 @@ import { RootState } from '../../store';
 
 const Item = ({ item }: { item: IProducts }) => {
   const handleViewProduct = () => {
-    console.log('this is a full prod');
+    console.log('this is to show full prod');
   };
 
   const { nome, avatar, preco, marca, qt_estoque } = item;
@@ -77,7 +77,7 @@ const Products = () => {
 
       <Stack spacing={2}>
         {data.map((item) => (
-          <Item key={item.id} item={item} imgUrl={item.avatar} />
+          <Item key={item.id} item={item} />
         ))}
       </Stack>
 

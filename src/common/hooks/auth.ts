@@ -2,20 +2,15 @@ import { useEffect, useState } from 'react';
 import { useGetUserQuery } from '../services/api';
 import { setUser, resetUser } from '../services/userSlice';
 import { InputUser } from '../types';
-import { useAppDispatch, useAppSelector } from './reduxHooks';
+import { useAppDispatch } from './reduxHooks';
 
 export const useAuth = () => {
+  const dispatch = useAppDispatch();
   const [skip, setSkip] = useState(true);
   const [error, setError] = useState(false);
   const [userInput, setUserInput] = useState({ email: '', password: '' });
 
-  const { value: userState } = useAppSelector((state) => state.user);
-  console.log('Auth hook:::', userState);
-
-  const dispatch = useAppDispatch();
-
-  const { data, isError, isLoading } = useGetUserQuery(userInput.email, { skip });
-  console.log({ data, isError, isLoading });
+  const { data, isLoading } = useGetUserQuery(userInput.email, { skip });
 
   useEffect(() => {
     if (data?.length === 1) {
@@ -36,17 +31,13 @@ export const useAuth = () => {
   }, [data, userInput]);
 
   const signin = (inputData: InputUser) => {
-    console.log('sign in');
     setSkip(false);
     setUserInput(inputData);
   };
 
   const logout = () => {
-    console.log('sign out');
-    // localStorage.removeItem('user');
     dispatch(resetUser());
   };
-
 
   return { signin, logout, isLoading, error };
 };

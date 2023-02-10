@@ -45,7 +45,7 @@ const Login = () => {
     const inputData = {
       email: formData.get('email') ?? '',
       password: formData.get('password') ?? '',
-    };
+    } as { email: string; password: string };
 
     signin(inputData);
   };

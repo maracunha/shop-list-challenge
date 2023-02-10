@@ -18,8 +18,8 @@ export interface User {
 }
 
 export interface InputUser {
-  email: string | FormDataEntryValue;
-  password: string | FormDataEntryValue;
+  email: string;
+  password: string;
 }
 
 export interface IProducts {
