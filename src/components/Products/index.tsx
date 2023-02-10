@@ -1,8 +1,10 @@
+import { ChangeEvent, useState } from 'react';
+import { Link } from 'react-router-dom';
 import {
+  Box,
   Paper,
   Stack,
   Pagination,
-  Typography,
   List,
   ListItem,
   ListItemAvatar,
@@ -11,20 +13,20 @@ import {
   IconButton,
   Button,
 } from '@mui/material';
-import { Box } from '@mui/system';
-import { ChangeEvent, useState } from 'react';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+
 import { useGetProductsQuery } from '../../common/services/api';
+import { IProducts } from '../../common/types';
+import SearchItem from '../SearchItem';
 
-interface ItemProps {
-  text: string;
-  imgUrl: string;
-}
-
-const Item = ({ text, imgUrl }: ItemProps) => {
+const Item = ({ item }: { item: IProducts }) => {
   const handleViewProduct = () => {
     console.log('this is a full prod');
   };
+
+  const { nome, avatar, preco, marca, qt_estoque } = item;
+
+  const description = `${nome} | Marca: ${marca} | Preço: ${preco} | Estoque: ${qt_estoque}`;
 
   return (
     <Paper>
@@ -37,16 +39,16 @@ const Item = ({ text, imgUrl }: ItemProps) => {
           }
         >
           <ListItemAvatar>
-            <Avatar>{imgUrl}</Avatar>
+            <Avatar>{avatar}</Avatar>
           </ListItemAvatar>
-          <ListItemText primary={text} />
+          <ListItemText primary={description} />
         </ListItem>
       </List>
     </Paper>
   );
 };
 
-export default function PaginationControlled() {
+const Products = () => {
   const [page, setPage] = useState(1);
   const { data, isLoading } = useGetProductsQuery(page);
 
@@ -60,14 +62,16 @@ export default function PaginationControlled() {
 
   return (
     <Box>
-      <Box display="flex" justifyContent="space-between">
-        <Typography variant="h6">seach bar lindoo</Typography>
-        <Button>Criar</Button>
+      <Box display="flex" mb={4} justifyContent="space-between">
+        <SearchItem />
+        <Button component={Link} variant="contained" to="/new">
+          Criar Produto
+        </Button>
       </Box>
 
       <Stack spacing={2}>
         {data.map((item) => (
-          <Item key={item.id} text={item.nome} imgUrl={item.avatar} />
+          <Item key={item.id} item={item} imgUrl={item.avatar} />
         ))}
       </Stack>
 
@@ -77,3 +81,5 @@ export default function PaginationControlled() {
     </Box>
   );
 }
+
+export default Products;
