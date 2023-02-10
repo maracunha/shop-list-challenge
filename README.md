@@ -1,4 +1,4 @@
-# Shop List App | Challenge
+# Shop List App Challenge
 
 Simple list of items  app, with login and all the good stuff.
 
