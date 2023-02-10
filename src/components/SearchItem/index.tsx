@@ -1,8 +1,9 @@
 import { styled, alpha } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
-import { useSeachProductsQuery } from '../../common/services/api';
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, KeyboardEvent, useState } from 'react';
+import { setSearchItem } from '../../common/services/productsSlice';
+import { useDispatch } from 'react-redux';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -46,10 +47,11 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 const SearchItem = () => {
   const [search, setSearch] = useState('');
-  // const { data, isLoading } = useSeachProductsQuery(search);
+  const dispatch = useDispatch()
 
   const handleSearch = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
+      dispatch(setSearchItem(search))
       console.log('Enter:', search);
     }
   };
@@ -58,7 +60,6 @@ const SearchItem = () => {
     setSearch(event.target.value);
   };
 
-  // console.log({ data, isLoading, search });
   return (
     <Search>
       <SearchIconWrapper>

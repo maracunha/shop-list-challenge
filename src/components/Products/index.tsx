@@ -18,6 +18,8 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import { useGetProductsQuery } from '../../common/services/api';
 import { IProducts } from '../../common/types';
 import SearchItem from '../SearchItem';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store';
 
 const Item = ({ item }: { item: IProducts }) => {
   const handleViewProduct = () => {
@@ -50,11 +52,15 @@ const Item = ({ item }: { item: IProducts }) => {
 
 const Products = () => {
   const [page, setPage] = useState(1);
-  const { data, isLoading } = useGetProductsQuery(page);
+  const search = useSelector((state: RootState) => state.products.searchItem);
+
+  const { data, isLoading } = useGetProductsQuery({ page, search });
 
   const handleChange = (event: ChangeEvent<unknown>, value: number) => {
     setPage(value);
   };
+
+  console.log({ search });
 
   if (!data || isLoading) {
     return <div>Carregando...</div>;
@@ -80,6 +86,6 @@ const Products = () => {
       </Stack>
     </Box>
   );
-}
+};
 
 export default Products;
