@@ -24,8 +24,12 @@ export const userApi = createApi({
       query: (page: number) => ({ url: "produto", params: { page, limit: 15 } }),
       transformResponse: (response: IProducts[]) => response,
     }),
+    seachProducts: builder.query({
+      query: (search: string) => ({ url: "produto", params: { search } }),
+      transformResponse: (response: IProducts[]) => response,
+    }),
   }),
 });
 
-export const { useGetUserQuery, useGetProductsQuery } = userApi;
+export const { useGetUserQuery, useGetProductsQuery, useSeachProductsQuery } = userApi;
 
