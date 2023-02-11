@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { RootState } from '../../store';
-import { User, IProducts, IFormInputUser } from '../types';
+import { User, IProducts, IPayloadForm } from '../types';
 import { setUser } from './userSlice';
 
 export const userApi = createApi({
@@ -23,7 +23,7 @@ export const userApi = createApi({
     }),
 
     createUser: builder.mutation({
-      query: (body: IFormInputUser) => ({ url: 'user', method: 'POST', body }),
+      query: (body: IPayloadForm) => ({ url: 'user', method: 'POST', body }),
       // transformResponse: (response: User[]) => response,
       async onQueryStarted(_, { dispatch, queryFulfilled }) {
         try {

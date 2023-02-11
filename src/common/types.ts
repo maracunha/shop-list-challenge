@@ -39,13 +39,31 @@ export interface IFormInputUser {
   surname: string;
   sexo: string;
   cpf: string;
-  date: Date;
+  date: number | null;
   email: string;
   password: string;
-  cep: number | null;
+  cep: string;
   city: string;
   state: string;
   patio: string;
   neighborhood: string;
   complement: string;
+
 }
+
+export interface IPayloadForm {
+  nome: string;
+  sobrenome: string;
+  cpf: string;
+  sexo: string;
+  dt_nascimento: number;
+  cep: string;
+  cidade: string;
+  estado: string;
+  logradouro: string;
+  bairro: string;
+  complemento: string;
+  email: string;
+  senha: string;
+}
+

@@ -27,7 +27,7 @@ const Signup = () => {
       surname: '',
       sexo: '',
       cpf: '',
-      date: '',
+      date: null,
       email: '',
       password: '',
       cep: '',
@@ -42,7 +42,6 @@ const Signup = () => {
 
   const watchCep = watch('cep');
   const address = useGetAddress(watchCep);
-  console.log({ address });
 
   if (address.localidade) {
     setValue('city', address.localidade);
@@ -69,7 +68,6 @@ const Signup = () => {
       email: data.email,
       senha: data.password,
     };
-    console.log(prepareData);
 
     await createUser(prepareData);
   };
