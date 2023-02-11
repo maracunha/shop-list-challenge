@@ -32,3 +32,20 @@ export interface IProducts {
   marca: string;
   id: number;
 }
+
+
+export interface IFormInputUser {
+  name: string;
+  surname: string;
+  sexo: string;
+  cpf: string;
+  date: Date;
+  email: string;
+  password: string;
+  cep: number | null;
+  city: string;
+  state: string;
+  patio: string;
+  neighborhood: string;
+  complement: string;
+}

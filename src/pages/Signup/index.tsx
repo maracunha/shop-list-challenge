@@ -1,99 +1,294 @@
-import {
-  Typography,
-  FormControl,
-  InputLabel,
-  OutlinedInput,
-  Stack,
-  Paper,
-  Button,
-  Link,
-} from '@mui/material';
-import { Box } from '@mui/system';
-import { FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
+import dayjs from 'dayjs';
+import { SubmitHandler, useForm, Controller } from 'react-hook-form';
 
-interface FormItemProps {
-  name: string;
-  label: string;
-  number?: boolean;
-  fullWidth?: boolean;
-}
+import { Box, Typography, Stack, Paper, Button, Link, TextField, Grid } from '@mui/material';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
-const FormItem = ({ name, label, number = false, fullWidth = false }: FormItemProps) => (
-  <FormControl fullWidth={fullWidth} required variant="outlined">
-    <InputLabel htmlFor={name}>{label}</InputLabel>
-    <OutlinedInput id={name} name={name} type={number ? 'number' : 'text'} label={label} />
-  </FormControl>
-);
+import { useCreateUserMutation } from '../../common/services/api';
+import { IFormInputUser } from '../../common/types';
 
 const Signup = () => {
   const navigate = useNavigate();
+  const [createUser, { isLoading, isSuccess }] = useCreateUserMutation();
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const {
+    handleSubmit,
+    control,
+    //  formState: { errors },
+  } = useForm({
+    defaultValues: {
+      name: '',
+      surname: '',
+      sexo: '',
+      cpf: '',
+      date: '',
+      email: '',
+      password: '',
+      cep: null,
+      city: '',
+      state: '',
+      patio: '',
+      neighborhood: '',
+      complement: '',
+    },
+    mode: 'onChange',
+  });
 
-    const formData = new FormData(event.currentTarget);
-    const input = {
-      email: formData.get('email') ?? '',
-      password: formData.get('password') ?? '',
+  const onSubmit: SubmitHandler<IFormInputUser> = async (data) => {
+    const bornDate = dayjs(data.date).unix();
+
+    const prepareData = {
+      nome: data.name,
+      sobrenome: data.surname,
+      cpf: data.cpf,
+      sexo: data.sexo,
+      dt_nascimento: bornDate,
+      cep: data.cep,
+      cidade: data.city,
+      estado: data.state,
+      logradouro: data.patio,
+      bairro: data.neighborhood,
+      complemento: data.complement,
+      email: data.email,
+      senha: data.password,
     };
+    console.log(prepareData);
+
+    await createUser(prepareData);
   };
 
+  if (isSuccess) {
+    navigate('/products', { replace: true });
+  }
+
   return (
-    <Box
-      display="flex"
-      justifyContent="center"
-      justifyItems="center"
-      alignItems="center"
-      height="100vh"
-    >
-      <Paper elevation={1} sx={{ height: 'fit-content' }}>
-        <Typography variant="h5" textAlign="center" py={2}>
-          Entre em sua conta
-        </Typography>
-        <Stack
-          component="form"
-          px={4}
-          py={2}
-          height="content-fit"
-          spacing={2}
-          autoComplete="off"
-          onSubmit={handleSubmit}
-        >
-          <FormItem fullWidth label="Nome" name="name" />
-          <div>
-            <FormItem label="Sobrenome" name="surname" />
-            <FormItem label="Sexo" name="gerero" />
-          </div>
-          <div>
-            <FormItem label="CPF:" name="cfp" number />
-            <FormItem label="Data de Nascimente" name="date" />
-          </div>
-          <hr />
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <Box
+        display="flex"
+        justifyContent="center"
+        justifyItems="center"
+        alignItems="center"
+        height="100vh"
+      >
+        <Paper elevation={1}>
+          <Typography variant="h5" textAlign="center" py={2}>
+            Crie sua conta
+          </Typography>
+          <Stack direction="column" p={2} spacing={1}>
+            <Grid container spacing={0.5}>
+              <Controller
+                name="name"
+                control={control}
+                render={({ field: { onChange } }) => (
+                  <Grid item xs={3}>
+                    <TextField
+                      label="Nome"
+                      fullWidth
+                      required
+                      variant="outlined"
+                      onChange={onChange}
+                    />
+                  </Grid>
+                )}
+              />
+              <Grid item xs={9}>
+                <Controller
+                  name="surname"
+                  control={control}
+                  render={({ field: { onChange } }) => (
+                    <TextField
+                      label="Sobrenome"
+                      fullWidth
+                      required
+                      variant="outlined"
+                      onChange={onChange}
+                    />
+                  )}
+                />
+              </Grid>
+            </Grid>
 
-          <div>
-            <FormItem label="Email" name="email" />
-            <FormItem label="Senha" name="password" />
-          </div>
+            <Stack direction="row" spacing={0.5}>
+              <Controller
+                name="cpf"
+                control={control}
+                render={({ field: { onChange } }) => (
+                  <TextField label="CPF" required variant="outlined" onChange={onChange} />
+                )}
+              />
+              <Controller
+                name="sexo"
+                control={control}
+                render={({ field: { onChange } }) => (
+                  <TextField label="Sexo" required variant="outlined" onChange={onChange} />
+                )}
+              />
+              <Controller
+                name="date"
+                control={control}
+                render={({ field: { onChange, value } }) => (
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DatePicker
+                      label="Data de nacimento"
+                      value={value}
+                      onChange={onChange}
+                      renderInput={(params) => <TextField {...params} />}
+                    />
+                  </LocalizationProvider>
+                )}
+              />
+            </Stack>
 
-          <Button type="submit" variant="contained">
-            Registre-se
-          </Button>
-          <Box display="flex">
-            <Typography mr="2rem">Já é registrado?</Typography>
-            <Link
-              component="button"
-              variant="body2"
-              onClick={() => {
-                navigate('/login');
-              }}
-            >
-              Entre aqui
-            </Link>
-          </Box>
-        </Stack>
-      </Paper>
-    </Box>
+            <Grid container spacing={0.5}>
+              <Controller
+                name="cep"
+                control={control}
+                render={({ field: { onChange } }) => (
+                  <Grid item xs={4}>
+                    <TextField
+                      label="CEP"
+                      fullWidth
+                      required
+                      variant="outlined"
+                      onChange={onChange}
+                    />
+                  </Grid>
+                )}
+              />
+              <Controller
+                name="city"
+                control={control}
+                render={({ field: { onChange } }) => (
+                  <Grid item xs={4}>
+                    <TextField
+                      label="Cidade"
+                      fullWidth
+                      required
+                      variant="outlined"
+                      onChange={onChange}
+                    />
+                  </Grid>
+                )}
+              />
+              <Controller
+                name="state"
+                control={control}
+                render={({ field: { onChange } }) => (
+                  <Grid item xs={4}>
+                    <TextField
+                      label="Stado"
+                      fullWidth
+                      required
+                      variant="outlined"
+                      onChange={onChange}
+                    />
+                  </Grid>
+                )}
+              />
+            </Grid>
+
+            <Grid container spacing={0.5}>
+              <Controller
+                name="patio"
+                control={control}
+                render={({ field: { onChange } }) => (
+                  <Grid item xs={4}>
+                    <TextField
+                      label="Logradouro"
+                      fullWidth
+                      required
+                      variant="outlined"
+                      onChange={onChange}
+                    />
+                  </Grid>
+                )}
+              />
+              <Controller
+                name="neighborhood"
+                control={control}
+                render={({ field: { onChange } }) => (
+                  <Grid item xs={4}>
+                    <TextField
+                      label="Bairro"
+                      fullWidth
+                      required
+                      variant="outlined"
+                      onChange={onChange}
+                    />
+                  </Grid>
+                )}
+              />
+              <Controller
+                name="complement"
+                control={control}
+                render={({ field: { onChange } }) => (
+                  <Grid item xs={4}>
+                    <TextField
+                      label="Complemento"
+                      fullWidth
+                      required
+                      variant="outlined"
+                      onChange={onChange}
+                    />
+                  </Grid>
+                )}
+              />
+            </Grid>
+
+            <Grid container spacing={0.5}>
+              <Controller
+                name="email"
+                control={control}
+                render={({ field: { onChange } }) => (
+                  <Grid item xs={6}>
+                    <TextField
+                      label="E-mail"
+                      fullWidth
+                      required
+                      variant="outlined"
+                      onChange={onChange}
+                    />
+                  </Grid>
+                )}
+              />
+              <Grid item xs={6}>
+                <Controller
+                  name="password"
+                  control={control}
+                  render={({ field: { onChange } }) => (
+                    <TextField
+                      label="Senha"
+                      fullWidth
+                      required
+                      variant="outlined"
+                      onChange={onChange}
+                    />
+                  )}
+                />
+              </Grid>
+            </Grid>
+            <Button type="submit" variant="contained">
+              Registre-se
+            </Button>
+            <Box display="flex">
+              <Typography mr="2rem">Já é registrado?</Typography>
+              <Link
+                component="button"
+                variant="body2"
+                onClick={() => {
+                  navigate('/login');
+                }}
+              >
+                Entre aqui
+              </Link>
+            </Box>
+          </Stack>
+        </Paper>
+      </Box>
+    </form>
   );
 };
 

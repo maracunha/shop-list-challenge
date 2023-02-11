@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { RootState } from '../../store';
-import { User, IProducts } from '../types';
+import { User, IProducts, IFormInputUser } from '../types';
+import { setUser } from './userSlice';
 
 export const userApi = createApi({
   reducerPath: 'userApi',
@@ -20,6 +21,20 @@ export const userApi = createApi({
       query: (email: string) => ({ url: 'user', params: { email } }),
       transformResponse: (response: User[]) => response,
     }),
+
+    createUser: builder.mutation({
+      query: (body: IFormInputUser) => ({ url: 'user', method: 'POST', body }),
+      // transformResponse: (response: User[]) => response,
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
+        try {
+          const response: {data: User} = await queryFulfilled;
+          dispatch(setUser(response.data));
+        } catch (err) {
+          console.error('Error on create user');
+        }
+      },
+    }),
+
     getProducts: builder.query({
       query: ({ page, search }: { page: number; search: string }) => ({
         url: 'produto',
@@ -34,4 +49,9 @@ export const userApi = createApi({
   }),
 });
 
-export const { useGetUserQuery, useGetProductsQuery, useSeachProductsQuery } = userApi;
+export const {
+  useGetUserQuery,
+  useGetProductsQuery,
+  useSeachProductsQuery,
+  useCreateUserMutation,
+} = userApi;
