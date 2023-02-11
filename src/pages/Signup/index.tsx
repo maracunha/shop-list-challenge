@@ -2,7 +2,23 @@ import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { SubmitHandler, useForm, Controller } from 'react-hook-form';
 
-import { Box, Typography, Stack, Paper, Button, Link, TextField, Grid } from '@mui/material';
+import {
+  Box,
+  InputAdornment,
+  IconButton,
+  Typography,
+  Stack,
+  Paper,
+  Button,
+  Link,
+  TextField,
+  Grid,
+  OutlinedInput,
+  InputLabel,
+  FormControl,
+} from '@mui/material';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -10,9 +26,11 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { useCreateUserMutation } from '../../common/services/api';
 import { IFormInputUser } from '../../common/types';
 import { useGetAddress } from '../../common/hooks/useGetAddress';
+import { useState } from 'react';
 
 const Signup = () => {
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
   const [createUser, { isLoading, isSuccess }] = useCreateUserMutation();
 
   const {
@@ -275,13 +293,25 @@ const Signup = () => {
                   name="password"
                   control={control}
                   render={({ field: { onChange } }) => (
-                    <TextField
-                      label="Senha"
-                      fullWidth
-                      required
-                      variant="outlined"
-                      onChange={onChange}
-                    />
+                    <FormControl fullWidth required>
+                      <InputLabel htmlFor="password">Senha</InputLabel>
+                      <OutlinedInput
+                        type={showPassword ? 'text' : 'password'}
+                        onChange={onChange}
+                        label="Senha"
+                        endAdornment={
+                          <InputAdornment position="end">
+                            <IconButton
+                              aria-label="toggle password visibility"
+                              onClick={() => setShowPassword((show) => !show)}
+                              edge="end"
+                            >
+                              {showPassword ? <VisibilityOff /> : <Visibility />}
+                            </IconButton>
+                          </InputAdornment>
+                        }
+                      />
+                    </FormControl>
                   )}
                 />
               </Grid>
