@@ -9,6 +9,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 import { useCreateUserMutation } from '../../common/services/api';
 import { IFormInputUser } from '../../common/types';
+import { useGetAddress } from '../../common/hooks/useGetAddress';
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -17,6 +18,8 @@ const Signup = () => {
   const {
     handleSubmit,
     control,
+    watch,
+    setValue,
     //  formState: { errors },
   } = useForm({
     defaultValues: {
@@ -27,7 +30,7 @@ const Signup = () => {
       date: '',
       email: '',
       password: '',
-      cep: null,
+      cep: '',
       city: '',
       state: '',
       patio: '',
@@ -36,6 +39,17 @@ const Signup = () => {
     },
     mode: 'onChange',
   });
+
+  const watchCep = watch('cep');
+  const address = useGetAddress(watchCep);
+  console.log({ address });
+
+  if (address.localidade) {
+    setValue('city', address.localidade);
+    setValue('state', address.uf);
+    setValue('patio', address.logradouro);
+    setValue('neighborhood', address.bairro);
+  }
 
   const onSubmit: SubmitHandler<IFormInputUser> = async (data) => {
     const bornDate = dayjs(data.date).unix();
@@ -161,7 +175,7 @@ const Signup = () => {
               <Controller
                 name="city"
                 control={control}
-                render={({ field: { onChange } }) => (
+                render={({ field: { onChange, value } }) => (
                   <Grid item xs={4}>
                     <TextField
                       label="Cidade"
@@ -169,6 +183,7 @@ const Signup = () => {
                       required
                       variant="outlined"
                       onChange={onChange}
+                      value={value}
                     />
                   </Grid>
                 )}
@@ -176,7 +191,7 @@ const Signup = () => {
               <Controller
                 name="state"
                 control={control}
-                render={({ field: { onChange } }) => (
+                render={({ field: { onChange, value } }) => (
                   <Grid item xs={4}>
                     <TextField
                       label="Stado"
@@ -184,6 +199,7 @@ const Signup = () => {
                       required
                       variant="outlined"
                       onChange={onChange}
+                      value={value}
                     />
                   </Grid>
                 )}
@@ -194,7 +210,7 @@ const Signup = () => {
               <Controller
                 name="patio"
                 control={control}
-                render={({ field: { onChange } }) => (
+                render={({ field: { onChange, value } }) => (
                   <Grid item xs={4}>
                     <TextField
                       label="Logradouro"
@@ -202,6 +218,7 @@ const Signup = () => {
                       required
                       variant="outlined"
                       onChange={onChange}
+                      value={value}
                     />
                   </Grid>
                 )}
@@ -209,7 +226,7 @@ const Signup = () => {
               <Controller
                 name="neighborhood"
                 control={control}
-                render={({ field: { onChange } }) => (
+                render={({ field: { onChange, value } }) => (
                   <Grid item xs={4}>
                     <TextField
                       label="Bairro"
@@ -217,6 +234,7 @@ const Signup = () => {
                       required
                       variant="outlined"
                       onChange={onChange}
+                      value={value}
                     />
                   </Grid>
                 )}
