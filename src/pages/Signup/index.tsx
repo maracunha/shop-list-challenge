@@ -26,7 +26,8 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { useCreateUserMutation } from '../../common/services/api';
 import { IFormInputUser } from '../../common/types';
 import { useGetAddress } from '../../common/hooks/useGetAddress';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { validateBr } from 'js-brasil';
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -38,6 +39,7 @@ const Signup = () => {
     control,
     watch,
     setValue,
+    setError,
     //  formState: { errors },
   } = useForm({
     defaultValues: {
@@ -67,6 +69,16 @@ const Signup = () => {
     setValue('patio', address.logradouro);
     setValue('neighborhood', address.bairro);
   }
+
+  const watchCpf = watch('cpf');
+
+  useEffect(() => {
+    const isValidCfp = validateBr.cpf(watchCpf) as boolean;
+
+    if (!isValidCfp) {
+      setError('cpf', { message: 'CPF inválido' });
+    }
+  }, [watchCpf]);
 
   const onSubmit: SubmitHandler<IFormInputUser> = async (data) => {
     const bornDate = dayjs(data.date).unix();
@@ -145,8 +157,15 @@ const Signup = () => {
               <Controller
                 name="cpf"
                 control={control}
-                render={({ field: { onChange } }) => (
-                  <TextField label="CPF" required variant="outlined" onChange={onChange} />
+                render={({ field: { onChange }, fieldState: { error, isDirty } }) => (
+                  <TextField
+                    label="CPF"
+                    required
+                    error={!!isDirty && !!error}
+                    variant="outlined"
+                    onChange={onChange}
+                    helperText={!!isDirty && !!error ? 'CFP inválido' : ''}
+                  />
                 )}
               />
               <Controller
