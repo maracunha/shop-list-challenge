@@ -52,7 +52,6 @@ const SearchItem = () => {
   const handleSearch = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
       dispatch(setSearchItem(search))
-      console.log('Enter:', search);
     }
   };
 

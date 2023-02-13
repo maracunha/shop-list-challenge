@@ -20,6 +20,7 @@ import Products from '../../components/Products';
 import NewProduct from '../../components/NewProduct';
 import { SIDE_NAMES } from '../../common/constants';
 import HeaderInfos from '../../components/HeaderInfos';
+import ProductInfos from '../../components/ProductInfos';
 
 const drawerWidth = 240;
 
@@ -112,6 +113,7 @@ export default function Dashboard() {
         <Toolbar />
         <Routes>
           <Route path="/products" element={<Products />} />
+          <Route path="/products/:id" element={<ProductInfos />} />
           <Route path="/new" element={<NewProduct />} />
         </Routes>
       </Box>

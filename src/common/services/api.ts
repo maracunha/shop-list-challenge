@@ -42,6 +42,10 @@ export const userApi = createApi({
       }),
       transformResponse: (response: IProducts[]) => response,
     }),
+    getProductById: builder.query({
+      query: (id: string) => ({ url: 'produto', params: { id } }),
+      transformResponse: (response: IProducts[]) => response,
+    }),
     seachProducts: builder.query({
       query: (search: string) => ({ url: 'produto', params: { search } }),
       transformResponse: (response: IProducts[]) => response,
@@ -56,6 +60,7 @@ export const userApi = createApi({
 export const {
   useGetUserQuery,
   useGetProductsQuery,
+  useGetProductByIdQuery,
   useSeachProductsQuery,
   useCreateUserMutation,
   useCreateProductMutation,

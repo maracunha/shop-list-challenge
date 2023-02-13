@@ -1,5 +1,5 @@
 import { ChangeEvent, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   Box,
   Paper,
@@ -22,8 +22,9 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
 
 const Item = ({ item }: { item: IProducts }) => {
+  const navigate = useNavigate();
   const handleViewProduct = () => {
-    console.log('this is to show full prod');
+    navigate(`/products/${item.id}`, { replace: true });
   };
 
   const { nome, avatar, preco, marca, qt_estoque } = item;
