@@ -32,7 +32,7 @@ import { validateBr } from 'js-brasil';
 const Signup = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-  const [createUser, { isLoading, isSuccess }] = useCreateUserMutation();
+  const [createUser, { isSuccess }] = useCreateUserMutation();
 
   const {
     handleSubmit,

@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { RootState } from '../../store';
-import { User, IProducts, IPayloadForm } from '../types';
+import { User, IProducts, IPayloadForm, IFormNewProductPayload} from '../types';
 import { setUser } from './userSlice';
 
 export const userApi = createApi({
@@ -46,6 +46,10 @@ export const userApi = createApi({
       query: (search: string) => ({ url: 'produto', params: { search } }),
       transformResponse: (response: IProducts[]) => response,
     }),
+    createProduct: builder.mutation({
+      query: (body: IFormNewProductPayload) => ({ url: 'produto', method: 'POST', body }),
+      transformResponse: (response: User[]) => response,
+    }),
   }),
 });
 
@@ -54,4 +58,5 @@ export const {
   useGetProductsQuery,
   useSeachProductsQuery,
   useCreateUserMutation,
+  useCreateProductMutation,
 } = userApi;

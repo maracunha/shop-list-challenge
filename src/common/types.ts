@@ -33,7 +33,6 @@ export interface IProducts {
   id: number;
 }
 
-
 export interface IFormInputUser {
   name: string;
   surname: string;
@@ -48,7 +47,6 @@ export interface IFormInputUser {
   patio: string;
   neighborhood: string;
   complement: string;
-
 }
 
 export interface IPayloadForm {
@@ -67,3 +65,20 @@ export interface IPayloadForm {
   senha: string;
 }
 
+export interface IFormNewProductPayload {
+  nome: string;
+  avatar: string;
+  preco: string;
+  qt_estoque: number;
+  qt_vendas: number;
+  marca: string;
+}
+
+export interface IFormNewProduct {
+  name: string;
+  avatar: string;
+  price: string;
+  stock: number;
+  sales: number;
+  brand: string;
+}
