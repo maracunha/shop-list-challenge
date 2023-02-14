@@ -25,7 +25,6 @@ const Login = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const { signin, error } = useAuth();
-  console.log({ error });
 
   const { value: userState } = useAppSelector((state) => state.user);
 

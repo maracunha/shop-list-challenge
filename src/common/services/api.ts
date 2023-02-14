@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { RootState } from '../../store';
 import { User, IProducts, IPayloadForm, ICreateProduct } from '../types';
-import { setUser } from './userSlice'
+import { setUser } from './userSlice';
 
 export const userApi = createApi({
   reducerPath: 'userApi',
@@ -51,6 +51,12 @@ export const userApi = createApi({
       query: (search: string) => ({ url: 'produto', params: { search } }),
       transformResponse: (response: IProducts[]) => response,
     }),
+    deleteProduct: builder.mutation({
+      query: (id: string) => ({
+        method: 'DELETE',
+        url: `produto/${id}`,
+      }),
+    }),
     createProduct: builder.mutation({
       query: ({ body, isEditing, id }: ICreateProduct) => ({
         url: isEditing ? `produto/${id}` : 'produto',
@@ -69,4 +75,5 @@ export const {
   useSeachProductsQuery,
   useCreateUserMutation,
   useCreateProductMutation,
+  useDeleteProductMutation,
 } = userApi;

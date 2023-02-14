@@ -21,7 +21,6 @@ export const productsSlice = createSlice({
       state.value = action.payload;
     },
     setSearchItem: (state, action: PayloadAction<string>) => {
-      console.log('state', action)
       state.searchItem = action.payload;
     },
   },

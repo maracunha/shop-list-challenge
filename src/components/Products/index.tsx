@@ -61,8 +61,6 @@ const Products = () => {
     setPage(value);
   };
 
-  console.log({ search });
-
   if (!data || isLoading) {
     return <div>Carregando...</div>;
   }

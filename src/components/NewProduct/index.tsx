@@ -17,6 +17,7 @@ import { IFormNewProduct, IFormNewProductPayload, IProducts } from '../../common
 import { useGetProductByIdQuery } from '../../common/services/api';
 
 const NewProduct = () => {
+  const [openModal, setOpenModal] = useState(false);
   const [createProduct, { isSuccess }] = useCreateProductMutation();
   const [product, setProduct] = useState<IProducts>();
   const navigate = useNavigate();

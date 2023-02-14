@@ -15,7 +15,6 @@ export const useAuth = () => {
   useEffect(() => {
     if (data?.length === 1) {
       const [user] = data;
-      console.log('user: ', user.senha, 'input', userInput.password);
       if (user.senha === userInput.password) {
         setError(false);
         dispatch(setUser(user));
