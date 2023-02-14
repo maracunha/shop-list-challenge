@@ -68,7 +68,7 @@ export interface IPayloadForm {
 export interface IFormNewProductPayload {
   nome: string;
   avatar: string;
-  preco: string;
+  preco: number;
   qt_estoque: number;
   qt_vendas: number;
   marca: string;
@@ -77,8 +77,14 @@ export interface IFormNewProductPayload {
 export interface IFormNewProduct {
   name: string;
   avatar: string;
-  price: string;
+  price: number;
   stock: number;
   sales: number;
   brand: string;
+}
+
+export interface ICreateProduct {
+  body: IFormNewProductPayload;
+  isEditing: boolean;
+  id: string;
 }

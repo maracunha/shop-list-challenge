@@ -1,18 +1,8 @@
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Box } from '@mui/system';
 import { useGetProductByIdQuery } from '../../common/services/api';
 import { IProducts } from '../../common/types';
-import {
-  Button,
-  CardActions,
-  CardContent,
-  Grid,
-  Typography,
-  TextField,
-  Stack,
-  Paper,
-  Divider,
-} from '@mui/material';
+import { Button, CardContent, Typography, Stack, Paper, Divider } from '@mui/material';
 
 type ProductParams = {
   id: string;
@@ -20,6 +10,13 @@ type ProductParams = {
 
 const ProductInfos = () => {
   const { id } = useParams<ProductParams>();
+  const navigate = useNavigate();
+
+  const handleEdit = () => {
+    if (id) {
+      navigate(`/edit/${id}`);
+    }
+  };
 
   const { data, isLoading } = useGetProductByIdQuery(id || '');
 
@@ -44,7 +41,6 @@ const ProductInfos = () => {
               {product.marca}
             </Typography>
           </Stack>
-
 
           <Stack direction="row">
             <Typography sx={{ fontSize: 16, pr: 1 }} color="text.primary" gutterBottom>
@@ -78,7 +74,7 @@ const ProductInfos = () => {
 
         <Stack direction="row" justifyContent="space-between" p={2}>
           <Button color="error">Deletar</Button>
-          <Button>Editar</Button>
+          <Button onClick={handleEdit}>Editar</Button>
         </Stack>
       </Paper>
     </Box>

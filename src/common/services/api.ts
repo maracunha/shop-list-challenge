@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { RootState } from '../../store';
-import { User, IProducts, IPayloadForm, IFormNewProductPayload} from '../types';
-import { setUser } from './userSlice';
+import { User, IProducts, IPayloadForm, ICreateProduct } from '../types';
+import { setUser } from './userSlice'
 
 export const userApi = createApi({
   reducerPath: 'userApi',
@@ -16,6 +16,7 @@ export const userApi = createApi({
       return headers;
     },
   }),
+  tagTypes: ['Product'],
   endpoints: (builder) => ({
     getUser: builder.query({
       query: (email: string) => ({ url: 'user', params: { email } }),
@@ -27,7 +28,7 @@ export const userApi = createApi({
       // transformResponse: (response: User[]) => response,
       async onQueryStarted(_, { dispatch, queryFulfilled }) {
         try {
-          const response: {data: User} = await queryFulfilled;
+          const response: { data: User } = await queryFulfilled;
           dispatch(setUser(response.data));
         } catch (err) {
           console.error('Error on create user');
@@ -51,8 +52,12 @@ export const userApi = createApi({
       transformResponse: (response: IProducts[]) => response,
     }),
     createProduct: builder.mutation({
-      query: (body: IFormNewProductPayload) => ({ url: 'produto', method: 'POST', body }),
-      transformResponse: (response: User[]) => response,
+      query: ({ body, isEditing, id }: ICreateProduct) => ({
+        url: isEditing ? `produto/${id}` : 'produto',
+        method: isEditing ? 'PUT' : 'POST',
+        body,
+      }),
+      invalidatesTags: ['Product'],
     }),
   }),
 });

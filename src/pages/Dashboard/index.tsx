@@ -114,6 +114,7 @@ export default function Dashboard() {
         <Routes>
           <Route path="/products" element={<Products />} />
           <Route path="/products/:id" element={<ProductInfos />} />
+          <Route path="/edit/:id" element={<NewProduct />} />
           <Route path="/new" element={<NewProduct />} />
         </Routes>
       </Box>

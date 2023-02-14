@@ -1,6 +1,6 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm, Controller } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
   Box,
   Typography,
@@ -12,25 +12,49 @@ import {
   InputAdornment,
 } from '@mui/material';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
-
 import { useCreateProductMutation } from '../../common/services/api';
-import { IFormNewProduct } from '../../common/types';
+import { IFormNewProduct, IFormNewProductPayload, IProducts } from '../../common/types';
+import { useGetProductByIdQuery } from '../../common/services/api';
 
 const NewProduct = () => {
   const [createProduct, { isSuccess }] = useCreateProductMutation();
+  const [product, setProduct] = useState<IProducts>();
   const navigate = useNavigate();
 
-  const { handleSubmit, control, watch, setValue, setError } = useForm({
+  const params = useParams();
+  const [path, id] = params['*']?.split('/') ?? [];
+
+  const isEditing = path === 'edit';
+  const { data } = useGetProductByIdQuery(id, { skip: !isEditing });
+
+  useEffect(() => {
+    if (isEditing && data) {
+      setProduct(data[0]);
+    }
+  }, [isEditing, data]);
+
+  const { handleSubmit, control, watch, setValue, setError, reset } = useForm({
     defaultValues: {
-      name: '',
-      avatar: '',
-      price: '',
-      stock: 0,
-      sales: 0,
-      brand: '',
+      name: product?.nome || '',
+      avatar: product?.avatar || '',
+      price: product?.preco || 0,
+      stock: product?.qt_estoque || 0,
+      sales: product?.qt_vendas || 0,
+      brand: product?.marca || '',
     },
     mode: 'onChange',
   });
+
+  useEffect(() => {
+    reset({
+      name: product?.nome || '',
+      avatar: product?.avatar || '',
+      price: product?.preco || 0,
+      stock: product?.qt_estoque || 0,
+      sales: product?.qt_vendas || 0,
+      brand: product?.marca || '',
+    });
+  }, [product, reset]);
 
   // get the final name and extension
   // that is only because this api is a fake one,
@@ -49,16 +73,16 @@ const NewProduct = () => {
   const onSubmit: SubmitHandler<IFormNewProduct> = async (data) => {
     const image = `https://cdn.fakercloud.com/avatars/${data.avatar}`;
 
-    const prepareData = {
+    const body = {
       nome: data.name,
       avatar: image,
       preco: data.price,
-      qt_estoque: +data.stock,
-      qt_vendas: +data.sales,
+      qt_estoque: data.stock,
+      qt_vendas: data.sales,
       marca: data.brand,
     };
 
-    await createProduct(prepareData);
+    await createProduct({ body, isEditing, id });
   };
 
   if (isSuccess) {
@@ -76,10 +100,11 @@ const NewProduct = () => {
             <Controller
               name="name"
               control={control}
-              render={({ field: { onChange } }) => (
+              render={({ field: { onChange, value } }) => (
                 <Grid item xs={3}>
                   <TextField
                     label="Nome"
+                    value={value}
                     fullWidth
                     required
                     variant="outlined"
@@ -91,9 +116,10 @@ const NewProduct = () => {
             <Controller
               name="brand"
               control={control}
-              render={({ field: { onChange } }) => (
+              render={({ field: { onChange, value } }) => (
                 <TextField
                   label="Marca"
+                  value={value}
                   fullWidth
                   required
                   variant="outlined"
@@ -104,26 +130,29 @@ const NewProduct = () => {
             <Controller
               name="price"
               control={control}
-              render={({ field: { onChange } }) => (
+              render={({ field: { onChange, value } }) => (
                 <TextField
                   label="Preço"
+                  value={value}
                   fullWidth
                   required
                   variant="outlined"
+                  type="number"
                   onChange={onChange}
                   InputProps={{
                     startAdornment: <InputAdornment position="start">R$</InputAdornment>,
                   }}
-                  inputProps={{ type: 'number', pattern: '[0-9]*' }}
+                  inputProps={{ pattern: '[0-9]*' }}
                 />
               )}
             />
             <Controller
               name="stock"
               control={control}
-              render={({ field: { onChange } }) => (
+              render={({ field: { onChange, value } }) => (
                 <TextField
                   label="Qntde Estoque"
+                  value={value}
                   fullWidth
                   required
                   type="number"
@@ -135,9 +164,10 @@ const NewProduct = () => {
             <Controller
               name="sales"
               control={control}
-              render={({ field: { onChange } }) => (
+              render={({ field: { onChange, value } }) => (
                 <TextField
                   label="Qntde Vendas"
+                  value={value}
                   fullWidth
                   required
                   type="number"
@@ -169,7 +199,7 @@ const NewProduct = () => {
             />
 
             <Button type="submit" variant="contained">
-              Criar
+              {isEditing ? 'Editar' : 'Criar'}
             </Button>
           </Stack>
         </Paper>
